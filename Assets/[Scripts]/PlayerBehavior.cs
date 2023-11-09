@@ -79,7 +79,15 @@ public class PlayerBehavior : MonoBehaviour
         }
         else
         {
-            _animator.SetInteger("State", (int)AnimationState.IDLE);
+            if(Mathf.Abs(_rigidbody.velocity.x) > 0.1f)
+            {
+                _animator.SetInteger("State", (int)AnimationState.WALK);
+            }
+            else
+            {
+                _animator.SetInteger("State", (int)AnimationState.IDLE);
+            }
+         
         }
     }
 
@@ -106,11 +114,11 @@ public class PlayerBehavior : MonoBehaviour
         Vector2 force = xMovementDirection * Vector2.right * applicableAcceleration;
 
 
-        if(xMovementDirection == -1)
+        if(xMovementDirection < 0)
         {
             transform.eulerAngles = new Vector3(0, 180, 0);
         }
-        else if (xMovementDirection == 1)
+        else if (xMovementDirection > 0)
         {
             transform.eulerAngles = Vector3.zero;
         }

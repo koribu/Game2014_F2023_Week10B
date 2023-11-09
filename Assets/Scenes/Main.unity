@@ -2244,8 +2244,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _accelerator: 10
   _maxSpeed: 10
+  _jumpSpeedLimit: 8
   _groundPoint: {fileID: 1570163919}
   _jumpingPower: 8
+  _isGrounded: 0
   _treshold: 0.5
   _groundingLayers:
     serializedVersion: 2
