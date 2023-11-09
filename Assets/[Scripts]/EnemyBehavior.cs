@@ -33,7 +33,7 @@ public class EnemyBehavior : MonoBehaviour
         _isThereGroundToStepOn = Physics2D.Linecast(_groundCheckPoint.position, _frontGroundPoint.position,_groundLayers);
         _isThereAnyObstacle = Physics2D.Linecast(_groundCheckPoint.position,_frontObstaclePoint.position,_groundLayers);
 
-        if(!_isThereGroundToStepOn || _isThereAnyObstacle)
+        if(_isGrounded && (!_isThereGroundToStepOn || _isThereAnyObstacle))
         {
             ChangeDirection();
         }
@@ -56,5 +56,6 @@ public class EnemyBehavior : MonoBehaviour
     {
         Debug.DrawLine(_groundCheckPoint.position, _groundCheckPoint.position + Vector3.down * .95f, Color.green, .001f);
         Debug.DrawLine(_groundCheckPoint.position, _frontGroundPoint.position, Color.green, .001f);
+        Debug.DrawLine(_groundCheckPoint.position, _frontObstaclePoint.position, Color.green, .001f);
     }
 }
