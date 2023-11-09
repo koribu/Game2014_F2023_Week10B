@@ -10,6 +10,9 @@ public class PlayerBehavior : MonoBehaviour
     float _accelerator = 100;
     [SerializeField]
     float _maxSpeed = 5;
+
+    [SerializeField]
+    float _jumpSpeedLimit;
     // Start is called before the first frame update
 
     [SerializeField]
@@ -18,6 +21,7 @@ public class PlayerBehavior : MonoBehaviour
     [SerializeField]
     float _jumpingPower = 20;
 
+    [SerializeField]
     bool _isGrounded = false;
 
     float _airbornSpeedMultiplier = .6f;
@@ -57,7 +61,12 @@ public class PlayerBehavior : MonoBehaviour
         Move();
         IsGrounded();
 
-        if(!_isGrounded)
+        if(_rigidbody.velocity.y > _jumpSpeedLimit)
+        {
+            _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, _jumpSpeedLimit);
+        }
+
+        if (!_isGrounded)
         {
             if(_rigidbody.velocity.y >=0)
             {
@@ -131,7 +140,6 @@ public class PlayerBehavior : MonoBehaviour
 
 
     }
-
 
 
 }
