@@ -28,9 +28,11 @@ public class PlayerBehavior : MonoBehaviour
     float _treshold;
     void Start()
     {
-        _leftJoystick = GameObject.Find("LeftController").GetComponent<Joystick>();
-
-
+        if(GameObject.Find("OnScreenController"))
+        {
+            _leftJoystick = GameObject.Find("LeftController").GetComponent<Joystick>();
+        }
+      
         _rigidbody = GetComponent<Rigidbody2D>();
 
     }
@@ -87,9 +89,14 @@ public class PlayerBehavior : MonoBehaviour
     }
 
     private void Jump()
-    { 
+    {
+        float leftJoystickVerticalInput = 0;
+        if(_leftJoystick)
+        {
+            leftJoystickVerticalInput = _leftJoystick.Vertical;
+        }
 
-        if(IsGrounded() && (Input.GetKeyDown(KeyCode.Space) || _leftJoystick.Vertical > _treshold))
+        if(IsGrounded() && (Input.GetKeyDown(KeyCode.Space) || leftJoystickVerticalInput > _treshold))
         {
             _rigidbody.AddForce(Vector2.up * _jumpingPower, ForceMode2D.Impulse);
         }
