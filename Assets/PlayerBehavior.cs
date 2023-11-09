@@ -21,9 +21,18 @@ public class PlayerBehavior : MonoBehaviour
     bool _isGrounded = false;
 
     float _airbornSpeedMultiplier = .6f;
+
+    Joystick _leftJoystick;
+    [SerializeField]
+    [Range(0, 1)]
+    float _treshold;
     void Start()
     {
+        _leftJoystick = GameObject.Find("LeftController").GetComponent<Joystick>();
+
+
         _rigidbody = GetComponent<Rigidbody2D>();
+
     }
 
     // Update is called once per frame
@@ -42,7 +51,13 @@ public class PlayerBehavior : MonoBehaviour
 
     private void Move()
     {
-        float xMovementDirection = Input.GetAxisRaw("Horizontal"); // Get the direction of the movement
+        float leftJoystickHorizontalInput = 0;
+        if(_leftJoystick != null)
+        {
+            leftJoystickHorizontalInput = _leftJoystick.Horizontal;
+        }
+
+        float xMovementDirection = Input.GetAxisRaw("Horizontal") + leftJoystickHorizontalInput; // Get the direction of the movement
 
 
         float applicableAcceleration = _accelerator;
@@ -72,10 +87,9 @@ public class PlayerBehavior : MonoBehaviour
     }
 
     private void Jump()
-    {
-        
+    { 
 
-        if(IsGrounded() && Input.GetKeyDown(KeyCode.Space))
+        if(IsGrounded() && (Input.GetKeyDown(KeyCode.Space) || _leftJoystick.Vertical > _treshold))
         {
             _rigidbody.AddForce(Vector2.up * _jumpingPower, ForceMode2D.Impulse);
         }
