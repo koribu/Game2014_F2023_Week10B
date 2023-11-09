@@ -26,6 +26,11 @@ public class PlayerBehavior : MonoBehaviour
     [SerializeField]
     [Range(0, 1)]
     float _treshold;
+
+    [SerializeField]
+    LayerMask _groundingLayers;
+
+    Animator _animator;
     void Start()
     {
         if(GameObject.Find("OnScreenController"))
@@ -34,7 +39,7 @@ public class PlayerBehavior : MonoBehaviour
         }
       
         _rigidbody = GetComponent<Rigidbody2D>();
-
+        _animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -43,12 +48,30 @@ public class PlayerBehavior : MonoBehaviour
 
         //Jump
         Jump();
+
     }
 
     private void FixedUpdate()
     {
         //Movement
         Move();
+        IsGrounded();
+
+        if(!_isGrounded)
+        {
+            if(_rigidbody.velocity.y >=0)
+            {
+                _animator.SetInteger("State", (int)AnimationState.JUMP);
+            }
+            else
+            {
+                _animator.SetInteger("State", (int)AnimationState.FALL);
+            }
+        }
+        else
+        {
+            _animator.SetInteger("State", (int)AnimationState.IDLE);
+        }
     }
 
     private void Move()
@@ -64,7 +87,7 @@ public class PlayerBehavior : MonoBehaviour
 
         float applicableAcceleration = _accelerator;
 
-        if (!IsGrounded())
+        if (!_isGrounded)
         {
             applicableAcceleration *= _airbornSpeedMultiplier; //Airborne speed
         }
@@ -96,15 +119,15 @@ public class PlayerBehavior : MonoBehaviour
             leftJoystickVerticalInput = _leftJoystick.Vertical;
         }
 
-        if(IsGrounded() && (Input.GetKeyDown(KeyCode.Space) || leftJoystickVerticalInput > _treshold))
+        if(_isGrounded && (Input.GetKeyDown(KeyCode.Space) || leftJoystickVerticalInput > _treshold))
         {
             _rigidbody.AddForce(Vector2.up * _jumpingPower, ForceMode2D.Impulse);
         }
     }
 
-    bool IsGrounded()
+    void IsGrounded()
     {
-        return Physics2D.CircleCast(_groundPoint.position, .1f, Vector2.down, .1f, LayerMask.GetMask("Ground"));
+        _isGrounded = Physics2D.CircleCast(_groundPoint.position, .1f, Vector2.down, .1f, _groundingLayers);
 
 
     }
